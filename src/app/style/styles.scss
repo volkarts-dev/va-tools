@@ -1,0 +1,7 @@
+.list-group-stripes li.list-group-item:nth-child(odd) {
+    background: var(--bs-gray-100);
+}
+
+.bg-body-tertiary.darker-bg-hover:hover {
+    background-color: var(--bs-gray-200) !important;
+}

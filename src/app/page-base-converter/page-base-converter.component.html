@@ -1,0 +1,114 @@
+<div class="container mt-3">
+    <div class="row gy-3">
+        <div class="col-12">
+            <div class="card">
+                <h5 class="card-header">
+                    Decode
+                </h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <h6 class="card-title">Input</h6>
+                        <p class="card-text">
+                            Select a codec, enter a valid encoded text and click 'Convert'
+                        </p>
+                        <form [formGroup]="decodeForm" (ngSubmit)="onSubmitDecodeForm()">
+                            <div class="mb-3">
+                                <label for="codec" class="form-label">Codec</label>
+                                <select class="form-select" formControlName="codec"
+                                    [ngClass]="{ 'is-invalid': decodeFormSubmitted && !decodeCodec?.valid, 'is-valid': decodeCodec?.valid }"
+                                    aria-describedby="codecInvalidHelp">
+                                    <option value="base32">base32</option>
+                                    <option value="base32crockford">base32 Crockford</option>
+                                    <option value="base58">base58</option>
+                                    <option value="base64">base64</option>
+                                    <option value="base64url">base64 URL save</option>
+                                    <option value="base64urlnopad">base64 URL save (no padding)</option>
+                                </select>
+                                <div id="codecInvalidHelp" class="invalid-feedback">
+                                    Please select a valid codec.
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="encodedText" class="form-label">Encoded</label>
+                                <textarea class="form-control" id="encodedText"
+                                    [ngClass]="{ 'is-invalid': decodeFormSubmitted && !encodedTextValid, 'is-valid': encodedTextValid }"
+                                    formControlName="encodedText"
+                                    aria-describedby="encodedTextInvalidHelp" required></textarea>
+                                <div id="encodedTextInvalidHelp" class="invalid-feedback">
+                                    Enter a valid {{decodeForm.value["codec"]}} encoded text.
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" [disabled]="!decodeForm.valid">Convert</button>
+                        </form>
+                    </li>
+                    <li *ngIf="decodeResult && decodeResult.valid" class="list-group-item">
+                        <h6 class="card-title">Result</h6>
+                        <div class="p-2 mb-2 position-relative bg-body-tertiary darker-bg-hover rounded">
+                            <pre class="m-0">{{decodeResult.resultText}}</pre>
+                            <button (click)="copyToClipboard(decodeResult.resultText)" class="btn position-absolute top-0 end-0" title="Copy"><i class="bi bi-copy"></i></button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <h5 class="card-header">
+                    Encode
+                </h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <h6 class="card-title">Input</h6>
+                        <p class="card-text">
+                            Select a codec, enter a text and click 'Convert'
+                        </p>
+                        <form [formGroup]="encodeForm" (ngSubmit)="onSubmitEncodeForm()">
+                            <div class="mb-3">
+                                <label for="codec" class="form-label">Codec</label>
+                                <select class="form-select" formControlName="codec"
+                                    [ngClass]="{ 'is-invalid': encodeFormSubmitted && !encodeCodec?.valid, 'is-valid': encodeCodec?.valid }"
+                                    aria-describedby="codecInvalidHelp">
+                                    <option value="base32">base32</option>
+                                    <option value="base32crockford">base32 Crockford</option>
+                                    <option value="base58">base58</option>
+                                    <option value="base64">base64</option>
+                                    <option value="base64url">base64 URL save</option>
+                                    <option value="base64urlnopad">base64 URL save (no padding)</option>
+                                </select>
+                                <div id="codecInvalidHelp" class="invalid-feedback">
+                                    Please select a valid codec.
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="text" class="form-label">Text</label>
+                                <textarea class="form-control" id="text"
+                                    [ngClass]="{ 'is-invalid': encodeFormSubmitted && !textValid, 'is-valid': textValid }"
+                                    formControlName="text"
+                                    aria-describedby="textInvalidHelp" required></textarea>
+                                <div id="textInvalidHelp" class="invalid-feedback">
+                                    Enter a text.
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" [disabled]="!encodeForm.valid">Convert</button>
+                        </form>
+                    </li>
+                    <li *ngIf="encodeResult && encodeResult.valid" class="list-group-item">
+                        <h6 class="card-title">Result</h6>
+                        <div class="p-2 mb-2 position-relative bg-body-tertiary darker-bg-hover rounded">
+                            <pre class="m-0">{{encodeResult.resultText}}</pre>
+                            <button (click)="copyToClipboard(encodeResult.resultText)" class="btn position-absolute top-0 end-0" title="Copy"><i
+                                    class="bi bi-copy"></i></button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div #mainToast class="toast" role="alert" aria-live="polite" aria-atomic="true">
+        <div class="toast-body">
+            {{toastMessage}}.
+        </div>
+    </div>
+</div>
