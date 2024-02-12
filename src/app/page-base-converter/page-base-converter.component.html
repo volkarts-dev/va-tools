@@ -30,7 +30,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="encodedText" class="form-label">Encoded</label>
-                                <textarea class="form-control" id="encodedText"
+                                <textarea class="form-control" id="encodedText" rows="7"
                                     [ngClass]="{ 'is-invalid': decodeFormSubmitted && !encodedTextValid, 'is-valid': encodedTextValid }"
                                     formControlName="encodedText"
                                     aria-describedby="encodedTextInvalidHelp" required></textarea>
@@ -81,7 +81,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="text" class="form-label">Text</label>
-                                <textarea class="form-control" id="text"
+                                <textarea class="form-control" id="text" rows="7"
                                     [ngClass]="{ 'is-invalid': encodeFormSubmitted && !textValid, 'is-valid': textValid }"
                                     formControlName="text"
                                     aria-describedby="textInvalidHelp" required></textarea>

@@ -23,6 +23,7 @@ function stripPadding(str: string, chr: string = "="): string {
 })
 export class BaseConversionService {
     decode(codec: string, text: string): BaseConversionResult {
+        text = text.trim();
         try {
             if (codec === "base32") {
                 const resultText = base32.decode(pad(5, text));
@@ -34,14 +35,11 @@ export class BaseConversionService {
                 const resultText = base58.decode(pad(5, text));
                 return { valid: true, resultText: escapeBytes(resultText) };
             } else if (codec === "base64") {
-                const resultText = base64.decode(pad(6, text));
-                return { valid: true, resultText: escapeBytes(resultText) };
+                return { valid: true, resultText: this.base64Decode(text, 0) };
             } else if (codec === "base64url") {
-                const resultText = base64url.decode(pad(6, text));
-                return { valid: true, resultText: escapeBytes(resultText) };
+                return { valid: true, resultText: this.base64Decode(text, 1) };
             } else if (codec === "base64urlnopad") {
-                const resultText = base64urlnopad.decode(stripPadding(text));
-                return { valid: true, resultText: escapeBytes(resultText) };
+                return { valid: true, resultText: this.base64Decode(text, 2) };
             } else {
                 throw new Error("Invalid codec");
             }
@@ -51,6 +49,7 @@ export class BaseConversionService {
     }
 
     encode(codec: string, text: string): BaseConversionResult {
+        text = text.trim();
         try {
             const bytes = new TextEncoder().encode(text);
             if (codec === "base32") {
@@ -77,5 +76,25 @@ export class BaseConversionService {
         } catch (e) {
             return { valid: false, errorText: (e as Error).message };
         }
+    }
+
+    base64Decode(text: string, type: number) {
+        let blocks = text.split(".");
+        const decoded = blocks.map((t) => {
+            let out = new Uint8Array();
+            switch (type) {
+                case 0:
+                    out = base64.decode(pad(6, t));
+                    break
+                case 1:
+                    out = base64url.decode(pad(6, t));
+                    break;
+                case 2:
+                    out = base64urlnopad.decode(stripPadding(t));
+                    break;
+            }
+            return escapeBytes(out);
+        });
+        return decoded.join("\n");
     }
 }
