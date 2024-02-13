@@ -14,10 +14,22 @@ function pad(bits: number, str: string, chr: string = "="): string {
     return str;
 }
 
-function stripPadding(str: string, chr: string = "="): string {
-    return str.replace(new RegExp(chr + "+$"), "");
+function base64Decode(codec: string, text: string) {
+    if (text.indexOf("-") != -1 || text.indexOf("_") != -1) {
+        codec = "base64url";
+    }
+    let blocks = text.split(".");
+    const decoded = blocks.map((t) => {
+        let out = new Uint8Array();
+        if (codec === "base64") {
+            out = base64.decode(pad(6, t));
+        } else if (codec === "base64url") {
+            out = base64url.decode(pad(6, t));
+        }
+        return escapeBytes(out);
+    });
+    return decoded.join("\n");
 }
-
 @Injectable({
     providedIn: "root"
 })
@@ -34,12 +46,8 @@ export class BaseConversionService {
             } else if (codec === "base58") {
                 const resultText = base58.decode(pad(5, text));
                 return { valid: true, resultText: escapeBytes(resultText) };
-            } else if (codec === "base64") {
-                return { valid: true, resultText: this.base64Decode(text, 0) };
-            } else if (codec === "base64url") {
-                return { valid: true, resultText: this.base64Decode(text, 1) };
-            } else if (codec === "base64urlnopad") {
-                return { valid: true, resultText: this.base64Decode(text, 2) };
+            } else if (codec.startsWith("base64")) {
+                return { valid: true, resultText: base64Decode(codec, text) };
             } else {
                 throw new Error("Invalid codec");
             }
@@ -76,25 +84,5 @@ export class BaseConversionService {
         } catch (e) {
             return { valid: false, errorText: (e as Error).message };
         }
-    }
-
-    base64Decode(text: string, type: number) {
-        let blocks = text.split(".");
-        const decoded = blocks.map((t) => {
-            let out = new Uint8Array();
-            switch (type) {
-                case 0:
-                    out = base64.decode(pad(6, t));
-                    break
-                case 1:
-                    out = base64url.decode(pad(6, t));
-                    break;
-                case 2:
-                    out = base64urlnopad.decode(stripPadding(t));
-                    break;
-            }
-            return escapeBytes(out);
-        });
-        return decoded.join("\n");
     }
 }

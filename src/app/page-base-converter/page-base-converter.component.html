@@ -35,7 +35,7 @@
                                     formControlName="encodedText"
                                     aria-describedby="encodedTextInvalidHelp" required></textarea>
                                 <div id="encodedTextInvalidHelp" class="invalid-feedback">
-                                    Enter a valid {{decodeForm.value["codec"]}} encoded text.
+                                    Invalid {{decodeForm.value["codec"]}} encoded text.
                                 </div>
                             </div>
                             <button class="btn btn-primary" [disabled]="!decodeForm.valid">Convert</button>
@@ -73,7 +73,6 @@
                                     <option value="base58">base58</option>
                                     <option value="base64">base64</option>
                                     <option value="base64url">base64 URL save</option>
-                                    <option value="base64urlnopad">base64 URL save (no padding)</option>
                                 </select>
                                 <div id="codecInvalidHelp" class="invalid-feedback">
                                     Please select a valid codec.
