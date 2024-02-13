@@ -109,6 +109,7 @@ export class PagePasswordGeneratorComponent implements OnInit {
     }
 
     private saveConfig(): void {
+        this.passwordConfig = this.configForm.value;
         this.globalState.passwordConfig$.next(this.passwordConfig);
     }
 
