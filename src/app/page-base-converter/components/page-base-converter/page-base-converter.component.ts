@@ -1,9 +1,9 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BaseConversionService } from './base-conversion.service';
-import { BaseConversionResult } from './base-conversion-result';
 import { CommonModule } from '@angular/common';
 import { Toast } from 'bootstrap';
+import { BaseConversionResult } from '../../entities/base-conversion-result';
+import { BaseConversionService } from '../../services/base-conversion.service';
 
 @Component({
     selector: 'app-page-base-converter',

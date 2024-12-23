@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavLinkDirective } from './navlink.directive';
+import { NavLinkDirective } from '../../directives/navlink.directive';
 
 @Component({
     selector: 'app-navbar',

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CidrConversionService } from './cidr-conversion.service';
-import { cidrNotationValidator, ipAddressValidator, validateCidrNotation, validateIpAddress } from './cidr-notation-validator.directive';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FromCidrConversionResult, ToCidrConversionResult } from './cidr-conversion-result';
+import { cidrNotationValidator, ipAddressValidator, validateCidrNotation, validateIpAddress } from '../../directives/cidr-notation-validator.directive';
+import { FromCidrConversionResult, ToCidrConversionResult } from '../../entities/cidr-conversion-result';
+import { CidrConversionService } from '../../services/cidr-conversion.service';
 
 @Component({
     selector: 'app-page-cidr-converter',

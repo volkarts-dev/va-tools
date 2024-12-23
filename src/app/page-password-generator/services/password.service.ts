@@ -1,12 +1,5 @@
 import { Injectable } from "@angular/core";
-
-export interface PasswordGeneratorConfig {
-    length: number;
-    includeUppercase: boolean;
-    includeLowercase: boolean;
-    includeNumbers: boolean;
-    includeSpecials: boolean;
-};
+import { PasswordGeneratorConfig } from "../../core/entities/password-generator-config";
 
 const CharacterTypes = {
     uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",

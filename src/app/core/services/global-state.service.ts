@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
-import { PasswordGeneratorConfig } from "./page-password-generator/password.service";
+import { PasswordGeneratorConfig } from "../entities/password-generator-config";
 
 const STORAGE_PASSWORD_CONFIG = "password-generator/config";
 const STORAGE_PASSWORD_HISTORY = "password-generator/history";

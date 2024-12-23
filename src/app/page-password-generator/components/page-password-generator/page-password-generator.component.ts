@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { PasswordGeneratorConfig, PasswordService } from './password.service';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Toast } from 'bootstrap';
-import { GlobalStateService } from '../global-state.service';
 import { filter, switchAll } from 'rxjs';
+import { PasswordService } from '../../services/password.service';
+import { PasswordGeneratorConfig } from '../../../core/entities/password-generator-config';
+import { GlobalStateService } from '../../../core/services/global-state.service';
 
 const atLeastOneChecked: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     if (

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { BaseConversionResult } from "./base-conversion-result";
 import { base32, base32crockford, base58, base64, base64url, base64urlnopad } from "@scure/base";
+import { BaseConversionResult } from "../entities/base-conversion-result";
 
 function escapeBytes(bytes: Uint8Array): string {
     const decoder = new TextDecoder("utf-8", { fatal: false, ignoreBOM: true });

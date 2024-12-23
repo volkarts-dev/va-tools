@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { IPv4Address } from "./ipv4-address";
-import { FromCidrConversionResult, ToCidrConversionResult } from "./cidr-conversion-result";
+import { IPv4Address } from "../entities/ipv4-address";
+import { FromCidrConversionResult, ToCidrConversionResult } from "../entities/cidr-conversion-result";
 
 const FULL_MASK = 0xFFFFFFFF;
 
