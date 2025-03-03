@@ -40,13 +40,15 @@
                             <button class="btn btn-primary" [disabled]="!decodeForm.valid">Convert</button>
                         </form>
                     </li>
-                    <li *ngIf="decodeResult && decodeResult.valid" class="list-group-item">
-                        <h6 class="card-title">Result</h6>
-                        <div class="p-2 mb-2 position-relative bg-body-tertiary darker-bg-hover rounded">
-                            <pre class="m-0">{{decodeResult.resultText}}</pre>
-                            <button (click)="copyToClipboard(decodeResult.resultText)" class="btn position-absolute top-0 end-0" title="Copy"><i class="bi bi-copy"></i></button>
-                        </div>
-                    </li>
+                    @if (decodeResult && decodeResult.valid) {
+                        <li class="list-group-item">
+                            <h6 class="card-title">Result</h6>
+                            <div class="p-2 mb-2 position-relative bg-body-tertiary darker-bg-hover rounded">
+                                <pre class="m-0">{{decodeResult.resultText}}</pre>
+                                <button (click)="copyToClipboard(decodeResult.resultText)" class="btn position-absolute top-0 end-0" title="Copy"><i class="bi bi-copy"></i></button>
+                            </div>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
@@ -90,14 +92,16 @@
                             <button class="btn btn-primary" [disabled]="!encodeForm.valid">Convert</button>
                         </form>
                     </li>
-                    <li *ngIf="encodeResult && encodeResult.valid" class="list-group-item">
-                        <h6 class="card-title">Result</h6>
-                        <div class="p-2 mb-2 position-relative bg-body-tertiary darker-bg-hover rounded">
-                            <pre class="m-0">{{encodeResult.resultText}}</pre>
-                            <button (click)="copyToClipboard(encodeResult.resultText)" class="btn position-absolute top-0 end-0" title="Copy"><i
-                                    class="bi bi-copy"></i></button>
-                        </div>
-                    </li>
+                    @if (encodeResult && encodeResult.valid) {
+                        <li class="list-group-item">
+                            <h6 class="card-title">Result</h6>
+                            <div class="p-2 mb-2 position-relative bg-body-tertiary darker-bg-hover rounded">
+                                <pre class="m-0">{{encodeResult.resultText}}</pre>
+                                <button (click)="copyToClipboard(encodeResult.resultText)" class="btn position-absolute top-0 end-0" title="Copy"><i
+                                        class="bi bi-copy"></i></button>
+                            </div>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>

@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { PasswordGeneratorConfig } from "../../core/entities/password-generator-config";
+import { GeneratedPassword } from "../models/generated-password";
 
 const CharacterTypes = {
     uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
@@ -25,7 +26,7 @@ function makeRandomInt(min: number, max: number) {
 })
 export class PasswordService {
 
-    generate(config: PasswordGeneratorConfig): string | boolean {
+    generate(config: PasswordGeneratorConfig): GeneratedPassword | null {
         let alphabet = "";
         let password = "";
 
@@ -47,14 +48,14 @@ export class PasswordService {
         }
 
         if (alphabet.length == 0) {
-            return false;
+            return null;
         }
 
         password += this.generateRandomChars(alphabet, config.length - password.length);
 
         password = this.shuffle(password);
 
-        return password;
+        return {created: new Date(), password: password};
     }
 
     private generateRandomChars(alphabet: string, length: number): string {

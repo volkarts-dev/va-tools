@@ -6,6 +6,8 @@ import { filter, switchAll } from 'rxjs';
 import { PasswordService } from '../../services/password.service';
 import { PasswordGeneratorConfig } from '../../../core/entities/password-generator-config';
 import { GlobalStateService } from '../../../core/services/global-state.service';
+import { GeneratedPassword } from '../../models/generated-password';
+import { GeneratedPasswordView } from '../../models/generated-password-view';
 
 const atLeastOneChecked: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     if (
@@ -32,8 +34,8 @@ const atLeastOneChecked: ValidatorFn = (control: AbstractControl): ValidationErr
 export class PagePasswordGeneratorComponent implements OnInit {
     configForm!: FormGroup;
     passwordConfig!: PasswordGeneratorConfig;
-    actualPassword?: string;
-    passwordHistory!: string[];
+    actualPassword?: GeneratedPassword;
+    passwordHistory!: GeneratedPasswordView[];
     configFormEnabled: boolean = true;
 
     get length() { return this.configForm.get("length"); };
@@ -51,7 +53,9 @@ export class PagePasswordGeneratorComponent implements OnInit {
         private globalState: GlobalStateService,
     ) {
         this.passwordConfig = this.globalState.passwordConfig$.getValue();
-        this.passwordHistory = this.globalState.passwordHistory$.getValue();
+        this.passwordHistory = this.globalState.passwordHistory$.getValue().map(p => {
+            return {password: p, show: false} as GeneratedPasswordView;
+        });
 
         this.configForm = this.formBuilder.group({
             length: [this.passwordConfig.length, [Validators.required, Validators.min(8), Validators.max(48)]],
@@ -84,7 +88,7 @@ export class PagePasswordGeneratorComponent implements OnInit {
         this.configFormEnabled = false;
         const password = this.passwordService.generate(this.passwordConfig);
 
-        if (typeof password === "string") {
+        if (password !== null) {
             this.actualPassword = password;
             this.pushPasswordHistory(password);
         }
@@ -97,12 +101,12 @@ export class PagePasswordGeneratorComponent implements OnInit {
         this.showToast("Password copied");
     }
 
-    private pushPasswordHistory(password: string) {
+    private pushPasswordHistory(password: GeneratedPassword) {
         if (this.passwordHistory.length == 50) {
             this.passwordHistory.pop();
         }
-        this.passwordHistory.unshift(password);
-        this.globalState.passwordHistory$.next(this.passwordHistory);
+        this.passwordHistory.unshift({password: password, show: false});
+        this.globalState.passwordHistory$.next(this.passwordHistory.map(p => p.password));
     }
 
     private handleFormValid() {

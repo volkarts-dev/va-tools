@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 import { PasswordGeneratorConfig } from "../entities/password-generator-config";
+import { GeneratedPassword } from "../../page-password-generator/models/generated-password";
 
 const STORAGE_PASSWORD_CONFIG = "password-generator/config";
 const STORAGE_PASSWORD_HISTORY = "password-generator/history";
@@ -10,7 +11,7 @@ const STORAGE_PASSWORD_HISTORY = "password-generator/history";
 })
 export class GlobalStateService {
     passwordConfig$!: BehaviorSubject<PasswordGeneratorConfig>;
-    passwordHistory$!: BehaviorSubject<string[]>;
+    passwordHistory$!: BehaviorSubject<GeneratedPassword[]>;
 
     constructor() {
         this.loadPasswordConfig();
@@ -45,14 +46,14 @@ export class GlobalStateService {
     }
 
     private loadPasswordHistory() {
-        let history: string[] = [];
+        let history: GeneratedPassword[] = [];
 
         try {
             const data = sessionStorage.getItem(STORAGE_PASSWORD_HISTORY);
             if (!data) {
                 throw new Error();
             }
-            history = JSON.parse(data) as string[];
+            history = JSON.parse(data) as GeneratedPassword[];
         } catch (e) {
         }
 
