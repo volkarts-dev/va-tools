@@ -2,6 +2,9 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 import { IPv4Address } from "../entities/ipv4-address";
 
 export function validateCidrNotation(str: string): IPv4Address | null {
+    if (str.startsWith("/")) {
+        str = "0.0.0.0" + str;
+    }
     const ip = IPv4Address.parse(str);
     return (ip && ip.bits) ? ip : null;
 }

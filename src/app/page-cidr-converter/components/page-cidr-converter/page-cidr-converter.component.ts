@@ -24,19 +24,23 @@ export class PageCidrConverterComponent {
     });
 
     toCidrForm = this.formBuilder.group({
-        startIp: ['', [
+        rangeType: ['ip-mask', [
             Validators.required,
-            ipAddressValidator("startIp"),
         ]],
-        endIp: ['', [
+        singleIp: ['', [
             Validators.required,
-            ipAddressValidator("endIp"),
+            ipAddressValidator("singleIp"),
+        ]],
+        maskIp: ['', [
+            Validators.required,
+            ipAddressValidator("maskIp"),
         ]],
     });
 
     get cidrIp() { return this.fromCidrForm.get("cidrIp"); }
-    get startIp() { return this.toCidrForm.get("startIp"); }
-    get endIp() { return this.toCidrForm.get("endIp"); }
+    get rangeType() { return this.toCidrForm.get("rangeType"); }
+    get singleIp() { return this.toCidrForm.get("singleIp"); }
+    get maskIp() { return this.toCidrForm.get("maskIp"); }
 
     fromCidrFormSubmitted: boolean = false;
     fromCidrResult: FromCidrConversionResult | null = null;
@@ -68,11 +72,11 @@ export class PageCidrConverterComponent {
     onSubmitToCidr() {
         this.toCidrFormSubmitted = true;
 
-        const start = this.toCidrForm.value["startIp"];
+        const start = this.toCidrForm.value["singleIp"];
         if (!start) {
             return;
         }
-        const end = this.toCidrForm.value["endIp"];
+        const end = this.toCidrForm.value["maskIp"];
         if (!end) {
             return;
         }
@@ -86,6 +90,15 @@ export class PageCidrConverterComponent {
             return;
         }
 
-        this.toCidrResult = this.conversionService.convertToCidr(startIp, endIp);
+        let type = this.toCidrForm.value["rangeType"];
+        switch (type) {
+            case 'ip-mask':
+                this.toCidrResult = this.conversionService.convertToCidrIPMask(startIp, endIp);
+                break;
+            case 'start-end':
+                this.toCidrResult = this.conversionService.convertToCidrStartEnd(startIp, endIp);
+                break;
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 export interface FromCidrConversionResult {
+    maskOnly: boolean;
     cidr: string;
     mask: string;
     firstIP: string;
@@ -9,7 +10,7 @@ export interface FromCidrConversionResult {
 export interface ToCidrConversionResult {
     startIp: string;
     endIp: string;
-    mask: string;
+    mask: string | null;
     cidr: string;
     hosts: number;
 }

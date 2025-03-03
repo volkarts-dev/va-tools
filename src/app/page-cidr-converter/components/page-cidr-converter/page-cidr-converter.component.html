@@ -13,52 +13,58 @@
                         </p>
                         <form [formGroup]="fromCidrForm" (ngSubmit)="onSubmitFromCidr()">
                             <div class="mb-3">
-                                <label for="cidrIp" class="form-label">IP in CIDR notation</label>
+                                <label for="cidrIp" class="form-label">IP in CIDR notation or CIDR Suffix</label>
                                 <input type="text" class="form-control" id="cidrIp"
                                     [ngClass]="{ 'is-invalid': fromCidrFormSubmitted && !cidrIp?.valid, 'is-valid': cidrIp?.valid }"
                                     formControlName="cidrIp"
-                                    placeholder="127.0.0.1/8"
+                                    placeholder="127.0.0.1/8 or /8"
                                     aria-describedby="cidrIpHelp cidrIpInvalidHelp" required>
                                 <div id="cidrIpInvalidHelp" class="invalid-feedback">
                                     Please enter a valid IP address in cidr notation.
                                 </div>
                                 <div id="cidrIpHelp" class="form-text">
-                                    An IPv4 address followed by a '/' and the bit count of the mask.
+                                    An optional IPv4 address followed by a '/' and the bit count of the mask.
                                 </div>
                             </div>
                             <button class="btn btn-primary" [disabled]="!fromCidrForm.valid">Convert</button>
                         </form>
                     </li>
-                    <li *ngIf="fromCidrResult" class="list-group-item">
-                        <h6 class="card-title">Result</h6>
-                        <ul class="list-group list-group-flush list-group-stripes rounded">
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col">CIDR Range</div><div class="col">{{fromCidrResult.cidr}}</div>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col">Netmask</div><div class="col">{{fromCidrResult.mask}}</div>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col">First IP (network)</div><div class="col">{{fromCidrResult.firstIP}}</div>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col">Last IP (broadcast)</div><div class="col">{{fromCidrResult.lastIP}}</div>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col">Host count</div><div class="col">{{fromCidrResult.hosts}}</div>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
+                    @if (fromCidrResult) {
+                        <li class="list-group-item">
+                            <h6 class="card-title">Result</h6>
+                            <ul class="list-group list-group-flush list-group-stripes rounded">
+                                @if (!fromCidrResult.maskOnly) {
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">CIDR notation</div><div class="col">{{fromCidrResult.cidr}}</div>
+                                        </div>
+                                    </li>
+                                }
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col">Netmask</div><div class="col">{{fromCidrResult.mask}}</div>
+                                    </div>
+                                </li>
+                                @if (!fromCidrResult.maskOnly) {
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">First IP (network)</div><div class="col">{{fromCidrResult.firstIP}}</div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">Last IP (broadcast)</div><div class="col">{{fromCidrResult.lastIP}}</div>
+                                        </div>
+                                    </li>
+                                }
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col">Host count</div><div class="col">{{fromCidrResult.hosts}}</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
@@ -71,65 +77,85 @@
                     <li class="list-group-item">
                         <h6 class="card-title">Input</h6>
                         <p class="card-text">
-                            Enter a start and an end address of an IP range and click 'Convert'
+                            Enter an IP and a mask or fist and last address and click 'Convert'
                         </p>
                         <form [formGroup]="toCidrForm" (ngSubmit)="onSubmitToCidr()" novalidate>
                             <div class="row">
+                                <div class="col-12 mb-3">
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" value="ip-mask" class="form-check-input" formControlName="rangeType" id="rangeType1"/>
+                                        <label for="rangeType1" class="form-check-label">IP / Mask</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" value="start-end" class="form-check-input" formControlName="rangeType" id="rangeType2"/>
+                                        <label for="rangeType2" class="form-check-label">IP Range</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
                                 <div class="col-6 mb-3">
-                                    <label for="startIp" class="form-label">First IP address</label>
-                                    <input type="text" class="form-control" id="startIp"
-                                        [ngClass]="{ 'is-invalid': toCidrFormSubmitted && !startIp?.valid, 'is-valid': startIp?.valid }"
-                                        formControlName="startIp" aria-describedby="startIpHelp" placeholder="127.0.0.0"
-                                        aria-describedby="startIpInvalidHelp" required>
-                                    <div id="startIpInvalidHelp" class="invalid-feedback">
+                                    <label for="singleIp" class="form-label">{{rangeType?.value === 'ip-mask' ? 'IP address' : 'First address (network)'}}</label>
+                                    <input type="text" class="form-control" id="singleIp"
+                                        [ngClass]="{ 'is-invalid': toCidrFormSubmitted && !singleIp?.valid, 'is-valid': rangeType?.value === 'ip-mask' && singleIp?.valid }"
+                                        formControlName="singleIp" aria-describedby="singleIpHelp" placeholder="192.168.0.0"
+                                        aria-describedby="singleIpInvalidHelp" required>
+                                    <div id="singleIpInvalidHelp" class="invalid-feedback">
                                         Please enter a valid IP address.
                                     </div>
                                 </div>
                                 <div class="col-6 mb-3">
-                                    <label for="endIp" class="form-label">Last IP address</label>
-                                    <input type="text" class="form-control" id="endIp"
-                                        [ngClass]="{ 'is-invalid': toCidrFormSubmitted && !endIp?.valid, 'is-valid': endIp?.valid }"
-                                        formControlName="endIp"
-                                        aria-describedby="endIpHelp" placeholder="127.255.255.255" aria-describedby="endIpInvalidHelp" required>
-                                    <div id="endIpInvalidHelp" class="invalid-feedback">
-                                        Please enter a valid IP address.
+                                    <label for="maskIp" class="form-label">{{rangeType?.value === 'ip-mask' ? 'Net mask' : 'Last address (broadcast)'}}</label>
+                                    <input type="text" class="form-control" id="maskIp"
+                                        [ngClass]="{ 'is-invalid': toCidrFormSubmitted && !maskIp?.valid, 'is-valid': rangeType?.value === 'ip-mask' && maskIp?.valid }"
+                                        formControlName="maskIp"
+                                        aria-describedby="maskIpHelp" placeholder="{{rangeType?.value === 'ip-mask' ? '255.255.255.0' : '192.168.255.255'}}" 
+                                        aria-describedby="maskIpInvalidHelp" required>
+                                    <div id="maskIpInvalidHelp" class="invalid-feedback">
+                                        Please enter a valid IP-network mask.
                                     </div>
                                 </div>
                             </div>
                             <button class="btn btn-primary" [disabled]="!toCidrForm.valid">Convert</button>
                         </form>
                     </li>
-                    <li *ngIf="toCidrResult" class="list-group-item">
-                        <h6 class="card-title">Result</h6>
-                        <ul class="list-group list-group-flush list-group-stripes rounded">
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col">IP Range</div>
-                                    <div class="col">
-                                        {{toCidrResult.startIp}} - {{toCidrResult.endIp}}
+                    @if (toCidrResult) {
+                        <li class="list-group-item">
+                            <h6 class="card-title">Result</h6>
+                            <ul class="list-group list-group-flush list-group-stripes rounded">
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col">First IP (network)</div><div class="col">{{toCidrResult.startIp}}</div>
                                     </div>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col">Netmask</div>
-                                    <div class="col">{{toCidrResult.mask}}</div>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col">CIDR notation</div>
-                                    <div class="col">{{toCidrResult.cidr}}</div>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col">Host count</div>
-                                    <div class="col">{{toCidrResult.hosts}}</div>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col">Last IP (broadcast)</div><div class="col">{{toCidrResult.endIp}}</div>
+                                    </div>
+                                </li>
+                                @if (toCidrResult.mask) {
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">Netmask</div>
+                                            <div class="col">{{toCidrResult.mask}}</div>
+                                        </div>
+                                    </li>
+                                }
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col">CIDR notation</div>
+                                        <div class="col">{{toCidrResult.cidr}}</div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col">Host count</div>
+                                        <div class="col">{{toCidrResult.hosts}}</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
