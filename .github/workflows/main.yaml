@@ -13,7 +13,7 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 22
-        cache: 'rpm'
+        cache: 'npm'
     - name: Install Dependencies
       run: npm install
     - name: Build Angular App
