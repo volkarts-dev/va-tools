@@ -17,10 +17,10 @@ jobs:
     - name: Install Dependencies
       run: npm install
     - name: Build Angular App
-      run: npm run build
+      run: npm run build --base-href=/va-tools/ 
     - name: Deploy to gh pages
       run: |
-        npx angular-cli-ghpages --name="ghpages bot" --email="ghpages-bot@volkarts.com" --base-href=/va-tools/ --dir=dist/va-tools/browser
+        npx angular-cli-ghpages --name="ghpages bot" --email="ghpages-bot@volkarts.com" --dir=dist/va-tools/browser
       env:
         CI: true
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
